@@ -8,7 +8,7 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.register = [0] * 8  # make 8 registers
+        self.register = [0] * 8  # making 8 registers
         self.pc = 0  # program counter
         self.IR = 0  # Instruction Register, contains a copy of the currently executing instruction
         self.ram = [0] * 256
@@ -35,7 +35,7 @@ class CPU:
             sys.exit(1)
         try:
             with open(file_name, 'r') as f:
-                print("Inside the file")
+                print(f"Inside the file: {file_name}")
                 for line in f:
                     # Process comments:
                     # Ignore anything after a # symbol
@@ -47,7 +47,7 @@ class CPU:
                     except ValueError:
                         continue
                     # print in binary and decimal
-                    print(f"binary: {x:08b} Decimal: {x:d}")
+                    print(f"Binary: {x:08b} Decimal: {x:d}")
                     program.append(x)
         except ValueError:
             print(f"File not found")
@@ -59,13 +59,17 @@ class CPU:
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
-        if op == self.opcodes['ADD']:
+        if op == "ADD":
             self.register[reg_a] += self.register[reg_b]
-            self.pc += 3
 
         elif op == self.opcodes['MUL']:  # MUL
             self.register[reg_a] *= self.register[reg_b]
             self.pc += 3
+
+        elif IR == self.opcodes['ADD']:
+            reg_a = self.ram[self.pc + 1]
+            reg_b = self.ram[self.pc + 2]
+            self.alu(IR, reg_a, reg_b)
 
         else:
             raise Exception("Unsupported ALU operation")
@@ -98,14 +102,14 @@ class CPU:
 
             IR = self.ram[self.pc]
 
-            if IR == self.opcodes['LDI']:  # LDI
+            if IR == self.opcodes['LDI']:
                 num = self.ram[self.pc + 1]
                 reg = self.ram[self.pc + 2]
 
                 self.register[num] = reg
                 self.pc += 3
 
-            elif IR == self.opcodes['PRN']:  # PRN
+            elif IR == self.opcodes['PRN']:
                 reg = self.ram[self.pc + 1]
                 print(self.register[reg])
                 self.pc += 2
@@ -148,11 +152,6 @@ class CPU:
                 # pop the value from the top of the stack
                 self.register[self.SP] += 1
 
-            elif IR == self.opcodes['ADD']:
-                reg_a = self.ram[self.pc + 1]
-                reg_b = self.ram[self.pc + 2]
-                self.alu(IR, reg_a, reg_b)
-
             else:
                 print(f"Unknown IR: {IR}")
                 sys.exit(1)
@@ -163,5 +162,6 @@ class CPU:
         return self.ram[MAR]
 
     # accept a value to write, and the addres to write it to
+
     def ram_write(self, MAR, MDR):
         self.ram[MAR] = MDR

@@ -44,9 +44,10 @@ class CPU:
                     num = comment_split[0]
                     try:
                         x = int(num, 2)
+                    except ValueError:
                         continue
                     # print in binary and decimal
-                    print(f"Binary: {x:08b} Decimal: {x:d}")
+                    print(f"binary: {x:08b} Decimal: {x:d}")
                     program.append(x)
         except ValueError:
             print(f"File not found")
@@ -146,6 +147,11 @@ class CPU:
                 self.pc = self.ram[self.register[self.SP]]
                 # pop the value from the top of the stack
                 self.register[self.SP] += 1
+
+            elif IR == self.opcodes['ADD']:
+                reg_a = self.ram[self.pc + 1]
+                reg_b = self.ram[self.pc + 2]
+                self.alu(IR, reg_a, reg_b)
 
             else:
                 print(f"Unknown IR: {IR}")
